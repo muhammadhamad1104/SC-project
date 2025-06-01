@@ -1,8 +1,10 @@
 package Interface;
+
 import javax.swing.*;
 
 import Application.Controller;
 import Application.Project;
+import Application.Session;
 
 import java.awt.*;
 import java.util.List;
@@ -58,9 +60,10 @@ public class AdminDashboard extends JFrame {
         });
 
         logoutBtn.addActionListener(e -> {
+            controller.logNotification("Admin", "Admin logged out");
+            Session.clearSession();
             new Home();
             dispose();
-            setVisible(false);
         });
 
         setVisible(true);
@@ -76,8 +79,8 @@ public class AdminDashboard extends JFrame {
 
             JTextArea info = new JTextArea(
                 "Title: " + p.getTitle() +
-                "\nDescription: " + p.getDescription() +
-                "\nSupervisor: " + p.getSupervisor());
+                "\nDescription: " + (p.getDescription() != null ? p.getDescription() : "No description") +
+                "\nSupervisor: " + (p.getSupervisor() != null ? p.getSupervisor() : "Unassigned"));
             info.setFont(new Font("Segoe UI", Font.PLAIN, 16));
             info.setEditable(false);
             info.setBackground(new Color(245, 245, 245));
@@ -101,7 +104,7 @@ public class AdminDashboard extends JFrame {
             editBtn.addActionListener(e -> new AddProject(projectListPanel, controller, p));
             removeBtn.addActionListener(e -> {
                 String result = controller.processRemoveProject(p);
-                JOptionPane.showMessageDialog(this, result, "Remove Project", JOptionPane.INFORMATION_MESSAGE);
+                new Notification(result);
                 refreshProjectList(panel, controller.getAllProjects());
             });
         }

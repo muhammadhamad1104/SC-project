@@ -1,24 +1,20 @@
 package Interface;
 
 import javax.swing.*;
-
-import Application.Controller;
-
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import Application.Controller;
+
 public class UploadWorkProductWindow extends JFrame {
     private Controller controller;
-    private List<File> uploadedFiles;
-    private JPanel fileListPanel;
 
     public UploadWorkProductWindow() {
         controller = new Controller();
-        uploadedFiles = new ArrayList<>();
         setTitle("Upload Work Product - Project Management System");
-        setSize(800, 600);
+        setSize(600, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -30,131 +26,81 @@ public class UploadWorkProductWindow extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
-        // Title
         JLabel titleLabel = new JLabel("Upload Work Product", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.gridwidth = 2;
         gbc.weighty = 0.0;
         mainPanel.add(titleLabel, gbc);
 
-        // File List Panel
-        fileListPanel = new JPanel(new GridBagLayout());
-        fileListPanel.setBackground(new Color(245, 245, 245));
-        fileListPanel.setBorder(BorderFactory.createTitledBorder("Uploaded Files"));
-        GridBagConstraints fileGbc = new GridBagConstraints();
-        fileGbc.insets = new Insets(10, 10, 10, 10);
-        fileGbc.fill = GridBagConstraints.HORIZONTAL;
-        fileGbc.weightx = 1.0;
-        fileGbc.weighty = 0.0;
-
-        JScrollPane scrollPane = new JScrollPane(fileListPanel);
+        JTextArea selectedFilesArea = new JTextArea(5, 30);
+        selectedFilesArea.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        selectedFilesArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(selectedFilesArea);
         gbc.gridx = 0;
         gbc.gridy = 1;
+        gbc.gridwidth = 2;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         mainPanel.add(scrollPane, gbc);
 
-        // Button Panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttonPanel.setBackground(new Color(245, 245, 245));
 
-        JButton chooseFileBtn = new JButton("Choose File");
-        chooseFileBtn.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        chooseFileBtn.setPreferredSize(new Dimension(120, 40));
+        JButton selectFilesBtn = new JButton("Select Files");
+        selectFilesBtn.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        selectFilesBtn.setPreferredSize(new Dimension(120, 40));
         JButton uploadBtn = new JButton("Upload");
         uploadBtn.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         uploadBtn.setPreferredSize(new Dimension(120, 40));
-        JButton cancelBtn = new JButton("Cancel");
-        cancelBtn.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        cancelBtn.setPreferredSize(new Dimension(120, 40));
+        JButton backBtn = new JButton("Back");
+        backBtn.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        backBtn.setPreferredSize(new Dimension(120, 40));
 
-        buttonPanel.add(chooseFileBtn);
+        buttonPanel.add(selectFilesBtn);
         buttonPanel.add(uploadBtn);
-        buttonPanel.add(cancelBtn);
+        buttonPanel.add(backBtn);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
+        gbc.gridwidth = 2;
         gbc.weighty = 0.0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         mainPanel.add(buttonPanel, gbc);
 
         add(mainPanel, BorderLayout.CENTER);
 
-        // Actions
-        chooseFileBtn.addActionListener(e -> {
+        List<File> selectedFiles = new ArrayList<>();
+        selectFilesBtn.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setMultiSelectionEnabled(true);
             int result = fileChooser.showOpenDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {
-                File file = fileChooser.getSelectedFile();
-                uploadedFiles.add(file);
-                addFileToList(file);
-                new Notification("Selected and added: " + file.getName());
+                selectedFiles.clear();
+                selectedFiles.addAll(List.of(fileChooser.getSelectedFiles()));
+                StringBuilder fileNames = new StringBuilder();
+                for (File file : selectedFiles) {
+                    fileNames.append(file.getName()).append("\n");
+                }
+                selectedFilesArea.setText(fileNames.toString());
             }
         });
 
         uploadBtn.addActionListener(e -> {
-            if (uploadedFiles.isEmpty()) {
-                new Notification("No files selected to upload.");
-            } else {
-                String result = controller.uploadWorkProduct(uploadedFiles);
-                new Notification(result);
+            if (selectedFiles.isEmpty()) {
+                new Notification("Please select at least one file to upload.");
+                return;
+            }
+            String result = controller.uploadWorkProduct(selectedFiles);
+            new Notification(result);
+            if (result.toLowerCase().contains("success")) {
                 dispose();
             }
         });
 
-        cancelBtn.addActionListener(e -> dispose());
+        backBtn.addActionListener(e -> dispose());
 
         setVisible(true);
-    }
-
-    private void addFileToList(File file) {
-        JPanel filePanel = new JPanel(new BorderLayout());
-        filePanel.setBackground(new Color(245, 245, 245));
-        filePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-        JLabel fileNameLabel = new JLabel(file.getName());
-        fileNameLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        JButton viewBtn = new JButton("View");
-        viewBtn.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        viewBtn.setPreferredSize(new Dimension(120, 40));
-        JButton deleteBtn = new JButton("Delete");
-        deleteBtn.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        deleteBtn.setPreferredSize(new Dimension(120, 40));
-
-        JPanel buttonGroup = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        buttonGroup.setBackground(new Color(245, 245, 245));
-        buttonGroup.add(viewBtn);
-        buttonGroup.add(deleteBtn);
-
-        filePanel.add(fileNameLabel, BorderLayout.CENTER);
-        filePanel.add(buttonGroup, BorderLayout.EAST);
-
-        viewBtn.addActionListener(e -> {
-            try {
-                Desktop.getDesktop().open(file);
-                new Notification("Opening file: " + file.getName());
-            } catch (Exception ex) {
-                new Notification("Cannot open file: " + ex.getMessage());
-            }
-        });
-
-        deleteBtn.addActionListener(e -> {
-            uploadedFiles.remove(file);
-            fileListPanel.remove(filePanel);
-            fileListPanel.revalidate();
-            fileListPanel.repaint();
-            new Notification("File removed: " + file.getName());
-        });
-
-        GridBagConstraints fileGbc = new GridBagConstraints();
-        fileGbc.insets = new Insets(5, 5, 5, 5);
-        fileGbc.fill = GridBagConstraints.HORIZONTAL;
-        fileGbc.gridx = 0;
-        fileGbc.gridy = fileListPanel.getComponentCount();
-        fileGbc.weightx = 1.0;
-        fileListPanel.add(filePanel, fileGbc);
-        fileListPanel.revalidate();
-        fileListPanel.repaint();
     }
 }

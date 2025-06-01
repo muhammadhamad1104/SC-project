@@ -20,10 +20,7 @@ public class StudentSubmission {
     public String getProjectTitle() { return projectTitle; }
     public File getWorkProduct() { return workProduct; }
     public String getFeedback() { return feedback; }
-    public void setFeedback(String feedback) { 
-        this.feedback += "\n" + new java.util.Date() + ": " + feedback;
-    }
-    public int getId() {
-        return id;
-    }
+    public void setFeedback(String feedback) { this.feedback = feedback; }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 }

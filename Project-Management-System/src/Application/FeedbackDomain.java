@@ -18,16 +18,27 @@ public class FeedbackDomain {
     }
 
     private String submitFeedback(StudentSubmission submission, String feedback) {
-        // Assume submission has an ID
+        if (feedback == null || feedback.trim().isEmpty()) {
+            return "Feedback cannot be empty.";
+        }
+        if (feedback.length() > 1000) {
+            return "Feedback is too long (max 1000 characters).";
+        }
         if (database.updateFeedback(submission.getId(), feedback)) {
+            database.logNotification(Session.getUserId(), "Feedback submitted for submission ID:", String.valueOf(submission.getId()));
             return "Feedback submitted successfully!";
         }
         return "Failed to submit feedback.";
     }
 
     private String getFeedback() {
-        // Assume submission ID from student session
-        int submissionId = 1; // Replace with dynamic ID
-        return database.getFeedback(submissionId);
+        if (!Session.isLoggedIn() || !Session.getRole().equals("student")) {
+            return "Please log in as a student.";
+        }
+        Project project = database.getRegisteredProject(Session.getUserId());
+        if (project == null) {
+            return "No registered project found.";
+        }
+        return database.getFeedback(Session.getUserId(), project.getId());
     }
 }

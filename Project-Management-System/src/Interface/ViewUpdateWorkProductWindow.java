@@ -2,16 +2,17 @@ package Interface;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 import Application.Controller;
 import Application.StudentSubmission;
 
-public class ViewStudentSubmissionsWindow extends JFrame {
+public class ViewUpdateWorkProductWindow extends JFrame {
     private Controller controller;
 
-    public ViewStudentSubmissionsWindow() {
+    public ViewUpdateWorkProductWindow() {
         controller = new Controller();
-        setTitle("View Student Submissions - Project Management System");
+        setTitle("View/Update Work Product - Project Management System");
         setSize(600, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -24,7 +25,7 @@ public class ViewStudentSubmissionsWindow extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
-        JLabel titleLabel = new JLabel("Student Submissions", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Your Work Products", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -40,9 +41,9 @@ public class ViewStudentSubmissionsWindow extends JFrame {
         subGbc.weightx = 1.0;
         subGbc.weighty = 0.0;
 
-        java.util.List<StudentSubmission> submissions = controller.getStudentSubmissions();
+        java.util.List<StudentSubmission> submissions = controller.getStudentOwnSubmissions();
         if (submissions.isEmpty()) {
-            JLabel noSubmissionsLabel = new JLabel("No submissions available.", SwingConstants.CENTER);
+            JLabel noSubmissionsLabel = new JLabel("No work products uploaded.", SwingConstants.CENTER);
             noSubmissionsLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
             subGbc.gridx = 0;
             subGbc.gridy = 0;
@@ -51,7 +52,7 @@ public class ViewStudentSubmissionsWindow extends JFrame {
             for (int i = 0; i < submissions.size(); i++) {
                 StudentSubmission submission = submissions.get(i);
                 JPanel panel = new JPanel(new BorderLayout());
-                panel.setBorder(BorderFactory.createTitledBorder(submission.getStudentName() + " - " + submission.getProjectTitle()));
+                panel.setBorder(BorderFactory.createTitledBorder(submission.getProjectTitle()));
                 panel.setBackground(new Color(245, 245, 245));
 
                 JTextArea details = new JTextArea("File: " + submission.getWorkProduct().getName() +
@@ -61,11 +62,23 @@ public class ViewStudentSubmissionsWindow extends JFrame {
                 details.setBackground(new Color(245, 245, 245));
                 panel.add(details, BorderLayout.CENTER);
 
-                JButton feedbackBtn = new JButton("Provide Feedback");
-                feedbackBtn.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-                feedbackBtn.setPreferredSize(new Dimension(150, 40));
-                feedbackBtn.addActionListener(e -> new ProvideFeedbackWindow(submission));
-                panel.add(feedbackBtn, BorderLayout.EAST);
+                JButton updateBtn = new JButton("Update");
+                updateBtn.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+                updateBtn.setPreferredSize(new Dimension(120, 40));
+                updateBtn.addActionListener(e -> {
+                    JFileChooser fileChooser = new JFileChooser();
+                    int result = fileChooser.showOpenDialog(this);
+                    if (result == JFileChooser.APPROVE_OPTION) {
+                        File newFile = fileChooser.getSelectedFile();
+                        String updateResult = controller.updateWorkProduct(submission, newFile);
+                        new Notification(updateResult);
+                        if (updateResult.toLowerCase().contains("success")) {
+                            dispose();
+                            new ViewUpdateWorkProductWindow();
+                        }
+                    }
+                });
+                panel.add(updateBtn, BorderLayout.EAST);
 
                 subGbc.gridx = 0;
                 subGbc.gridy = i;

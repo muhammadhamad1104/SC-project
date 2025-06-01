@@ -6,7 +6,7 @@ import java.awt.*;
 public class Notification extends JFrame {
     public Notification(String message) {
         setTitle("Notification");
-        setSize(400, 300); // Larger window for spacious layout
+        setSize(400, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -18,15 +18,13 @@ public class Notification extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
-        // Message Label
         JLabel messageLabel = new JLabel(message, SwingConstants.CENTER);
         messageLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weighty = 0.5; // Center vertically with some weight
+        gbc.weighty = 0.5;
         formPanel.add(messageLabel, gbc);
 
-        // Button Panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttonPanel.setBackground(new Color(245, 245, 245));
         JButton okButton = new JButton("OK");
@@ -37,12 +35,11 @@ public class Notification extends JFrame {
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.weighty = 0.5; // Push button to bottom but keep centered
+        gbc.weighty = 0.5;
         formPanel.add(buttonPanel, gbc);
 
         add(formPanel, BorderLayout.CENTER);
 
         setVisible(true);
     }
-    
 }

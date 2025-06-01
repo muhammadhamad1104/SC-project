@@ -3,7 +3,7 @@ package Application;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
+import Database.*;
 public class Controller {
     // User Operations
     public String processLogin(String email, String password, String role) {
@@ -69,6 +69,21 @@ public class Controller {
         return (String) domainInput;
     }
 
+    public ArrayList<Database.RegistrationRequest> getPendingRegistrationRequests() {
+        Object domainInput = new RegistrationRequestDomain().process("getPendingRequests");
+        return (ArrayList<Database.RegistrationRequest>) domainInput;
+    }
+
+    public String approveRegistrationRequest(Database.RegistrationRequest request) {
+        Object domainInput = new RegistrationRequestDomain().process(request, "approveRequest");
+        return (String) domainInput;
+    }
+
+    public String rejectRegistrationRequest(Database.RegistrationRequest request) {
+        Object domainInput = new RegistrationRequestDomain().process(request, "rejectRequest");
+        return (String) domainInput;
+    }
+
     // Student Operations
     public ArrayList<Project> getAvailableProjects() {
         Object domainInput = new ProjectAssignmentDomain().process("getAvailableProjects");
@@ -90,14 +105,29 @@ public class Controller {
         return (String) domainInput;
     }
 
+    public ArrayList<StudentSubmission> getStudentOwnSubmissions() {
+        Object domainInput = new SubmissionManagementDomain().process("getStudentOwnSubmissions");
+        return (ArrayList<StudentSubmission>) domainInput;
+    }
+
+    public String updateWorkProduct(StudentSubmission submission, File file) {
+        Object domainInput = new SubmissionManagementDomain().process(submission, file, "updateWorkProduct");
+        return (String) domainInput;
+    }
+
     public String getFeedback() {
         Object domainInput = new FeedbackDomain().process("getFeedback");
         return (String) domainInput;
     }
 
     // Notification Operations
-    public String logNotification(String message) {
-        Object domainInput = new NotificationDomain().process(message, "logNotification");
+    public String logNotification(String message, String status) {
+        Object domainInput = new NotificationDomain().process(message, status, "logNotification");
         return (String) domainInput;
+    }
+
+    public List<Database.Notification> getNotifications() {
+        Object domainInput = new NotificationDomain().process("getNotifications");
+        return (List<Database.Notification>) domainInput;
     }
 }

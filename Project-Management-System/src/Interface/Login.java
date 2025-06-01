@@ -16,33 +16,29 @@ public class Login extends JFrame {
 
     public Login() {
         setTitle("Login - Project Management System");
-        setSize(420, 450); // Increased height for role field
+        setSize(420, 450);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Initialize controller
         controller = new Controller();
 
-        // Main content panel with background color
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
-        mainPanel.setBackground(new Color(245, 245, 245)); // Light gray background
+        mainPanel.setBackground(new Color(245, 245, 245));
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(15, 15, 15, 15); // Increased spacing
+        gbc.insets = new Insets(15, 15, 15, 15);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Title Label
         JLabel titleLabel = new JLabel("Project Management System", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28)); // Match Home.java
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         mainPanel.add(titleLabel, gbc);
 
-        // Email
         JLabel emailLabel = new JLabel("Email:");
-        emailLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16)); // Match button font
+        emailLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
@@ -54,7 +50,6 @@ public class Login extends JFrame {
         gbc.gridy = 1;
         mainPanel.add(emailField, gbc);
 
-        // Password
         JLabel passwordLabel = new JLabel("Password:");
         passwordLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         gbc.gridx = 0;
@@ -62,14 +57,11 @@ public class Login extends JFrame {
         mainPanel.add(passwordLabel, gbc);
 
         passwordField = new JPasswordField();
-        gbc.gridx = 1;
-        gbc.gridy = 2;
         passwordField.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         gbc.gridx = 1;
         gbc.gridy = 2;
         mainPanel.add(passwordField, gbc);
 
-        // Role Selection
         JLabel roleLabel = new JLabel("Role:");
         roleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         gbc.gridx = 0;
@@ -83,13 +75,12 @@ public class Login extends JFrame {
         gbc.gridy = 3;
         mainPanel.add(roleComboBox, gbc);
 
-        // Panel for Login and Back Buttons
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        buttonPanel.setBackground(new Color(245, 245, 245)); // Match main panel
+        buttonPanel.setBackground(new Color(245, 245, 245));
 
         JButton loginButton = new JButton("Login");
         loginButton.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        loginButton.setPreferredSize(new Dimension(70, 40)); // Match Home.java
+        loginButton.setPreferredSize(new Dimension(70, 40));
         JButton backButton = new JButton("Back");
         backButton.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         backButton.setPreferredSize(new Dimension(70, 40));
@@ -103,7 +94,6 @@ public class Login extends JFrame {
         gbc.fill = GridBagConstraints.CENTER;
         mainPanel.add(buttonPanel, gbc);
 
-        // Signup Link
         JLabel signupLabel = new JLabel("Don't have an account? Sign up");
         signupLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         signupLabel.setForeground(Color.BLUE.darker());
@@ -115,26 +105,23 @@ public class Login extends JFrame {
 
         add(mainPanel, BorderLayout.CENTER);
 
-        // Action Listeners
         loginButton.addActionListener(e -> {
             String email = emailField.getText().trim();
             String password = new String(passwordField.getPassword());
             String role = (String) roleComboBox.getSelectedItem();
 
-            // Send to controller, receive result
             String result = controller.processLogin(email, password, role);
-            JOptionPane.showMessageDialog(this, result, "Login Result", JOptionPane.INFORMATION_MESSAGE);
+            new Notification(result);
 
-            // Navigate based on role if successful
             if (result.toLowerCase().contains("successful")) {
-                switch (role) {
-                    case "Admin":
+                switch (role.toLowerCase()) {
+                    case "admin":
                         new AdminDashboard();
                         break;
-                    case "Supervisor":
+                    case "supervisor":
                         new SupervisorDashboard();
                         break;
-                    case "Student":
+                    case "student":
                         new StudentDashboard();
                         break;
                 }
