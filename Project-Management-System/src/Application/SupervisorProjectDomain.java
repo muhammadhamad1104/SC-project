@@ -10,8 +10,10 @@ public class SupervisorProjectDomain {
     public Object process(Object... args) {
         String operation = (String) args[args.length - 1];
         if (operation.equals("getAssignedProjects")) {
-            // Assume supervisor email is available (e.g., from session)
-            return database.getAssignedProjects("Dr. Smith");
+            if (!Session.isLoggedIn() || !Session.getRole().equals("supervisor")) {
+                return new ArrayList<Project>();
+            }
+            return new ArrayList<>(database.getAssignedProjects(Session.getUserId()));
         }
         return "Invalid operation";
     }

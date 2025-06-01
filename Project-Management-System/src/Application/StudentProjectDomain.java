@@ -8,8 +8,10 @@ public class StudentProjectDomain {
     public Object process(Object... args) {
         String operation = (String) args[args.length - 1];
         if (operation.equals("getRegisteredProject")) {
-            int studentId = 1; // Assume from session
-            return database.getRegisteredProject(studentId);
+            if (!Session.isLoggedIn() || !Session.getRole().equals("student")) {
+                return null;
+            }
+            return database.getRegisteredProject(Session.getUserId());
         }
         return "Invalid operation";
     }

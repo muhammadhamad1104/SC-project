@@ -1,18 +1,17 @@
 package Interface;
 
 import javax.swing.*;
+import java.awt.*;
 
 import Application.Controller;
 import Application.Project;
-
-import java.awt.*;
 
 public class ViewRegisteredProjectWindow extends JFrame {
     private Controller controller;
 
     public ViewRegisteredProjectWindow() {
         controller = new Controller();
-        setTitle("Registered Project - Project Management System");
+        setTitle("View Registered Project - Project Management System");
         setSize(600, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -25,61 +24,70 @@ public class ViewRegisteredProjectWindow extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
-        // Title
         JLabel titleLabel = new JLabel("Registered Project", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.gridwidth = 1;
         gbc.weighty = 0.0;
         mainPanel.add(titleLabel, gbc);
 
-        // Project Details
         Project project = controller.getRegisteredProject();
-        if (project != null) {
-            JPanel projectPanel = new JPanel(new BorderLayout());
-            projectPanel.setBorder(BorderFactory.createTitledBorder(project.getTitle()));
-            projectPanel.setBackground(new Color(245, 245, 245));
+        JPanel projectPanel = new JPanel(new GridBagLayout());
+        projectPanel.setBackground(new Color(245, 245, 245));
+        GridBagConstraints projGbc = new GridBagConstraints();
+        projGbc.insets = new Insets(10, 10, 10, 10);
+        projGbc.fill = GridBagConstraints.BOTH;
+        projGbc.weightx = 1.0;
+        projGbc.weighty = 0.0;
 
-            JTextArea info = new JTextArea(
-                    "Title: " + project.getTitle() +
-                    "\nDescription: " + project.getDescription() +
-                    "\nSupervisor: " + project.getSupervisor()
-            );
-            info.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-            info.setEditable(false);
-            info.setBackground(new Color(245, 245, 245));
-            projectPanel.add(info, BorderLayout.CENTER);
-
-            gbc.gridx = 0;
-            gbc.gridy = 1;
-            gbc.weighty = 1.0;
-            gbc.fill = GridBagConstraints.BOTH;
-            mainPanel.add(projectPanel, gbc);
-        } else {
-            JLabel noProjectLabel = new JLabel("You have not registered for any project.", SwingConstants.CENTER);
+        if (project == null) {
+            JLabel noProjectLabel = new JLabel("No project registered.", SwingConstants.CENTER);
             noProjectLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-            gbc.gridx = 0;
-            gbc.gridy = 1;
-            gbc.weighty = 1.0;
-            mainPanel.add(noProjectLabel, gbc);
+            projGbc.gridx = 0;
+            projGbc.gridy = 0;
+            projectPanel.add(noProjectLabel, projGbc);
+        } else {
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.setBorder(BorderFactory.createTitledBorder(project.getTitle()));
+            panel.setBackground(new Color(245, 245, 245));
+
+            JTextArea details = new JTextArea("Description: " + (project.getDescription() != null ? project.getDescription() : "No description") +
+                    "\nSupervisor: " + (project.getSupervisor() != null ? project.getSupervisor() : "Unassigned"));
+            details.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+            details.setEditable(false);
+            details.setBackground(new Color(245, 245, 245));
+            panel.add(details, BorderLayout.CENTER);
+
+            projGbc.gridx = 0;
+            projGbc.gridy = 0;
+            projectPanel.add(panel, projGbc);
         }
 
-        // Back Button
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        bottomPanel.setBackground(new Color(245, 245, 245));
+        JScrollPane scrollPane = new JScrollPane(projectPanel);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        mainPanel.add(scrollPane, gbc);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        buttonPanel.setBackground(new Color(245, 245, 245));
         JButton backBtn = new JButton("Back");
         backBtn.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         backBtn.setPreferredSize(new Dimension(120, 40));
-        backBtn.addActionListener(e -> dispose());
-        bottomPanel.add(backBtn);
+        buttonPanel.add(backBtn);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.weighty = 0.0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        mainPanel.add(bottomPanel, gbc);
+        mainPanel.add(buttonPanel, gbc);
 
         add(mainPanel, BorderLayout.CENTER);
+
+        backBtn.addActionListener(e -> dispose());
+
         setVisible(true);
     }
 }

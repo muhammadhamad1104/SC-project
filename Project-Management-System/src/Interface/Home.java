@@ -11,16 +11,13 @@ public class Home extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // Create menu bar
         JMenuBar menuBar = new JMenuBar();
         menuBar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        // Exit menu
         JMenu exitMenu = new JMenu("Exit");
         JMenuItem exitItem = new JMenuItem("Exit");
         exitMenu.add(exitItem);
 
-        // Help menu
         JMenu helpMenu = new JMenu("Help");
         JMenuItem aboutItem = new JMenuItem("About");
         helpMenu.add(aboutItem);
@@ -29,24 +26,21 @@ public class Home extends JFrame {
         menuBar.add(helpMenu);
         setJMenuBar(menuBar);
 
-        // Main content panel with background color
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
-        mainPanel.setBackground(new Color(245, 245, 245)); // Light gray background
+        mainPanel.setBackground(new Color(245, 245, 245));
 
-        // Welcome label with modern font
         JLabel welcomeLabel = new JLabel("Welcome to Project Management System", SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
         welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         mainPanel.add(welcomeLabel);
 
-        mainPanel.add(Box.createRigidArea(new Dimension(0, 50))); // Increased spacer
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 50)));
 
-        // Button panel for Login and Sign Up
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 10));
-        buttonPanel.setBackground(new Color(245, 245, 245)); // Match main panel background
+        buttonPanel.setBackground(new Color(245, 245, 245));
 
         JButton loginButton = new JButton("Login");
         loginButton.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -61,7 +55,6 @@ public class Home extends JFrame {
 
         add(mainPanel, BorderLayout.CENTER);
 
-        // Action Listeners
         exitItem.addActionListener(e -> System.exit(0));
 
         aboutItem.addActionListener(e -> {

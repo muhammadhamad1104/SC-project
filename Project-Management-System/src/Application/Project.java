@@ -11,11 +11,12 @@ public class Project {
         this.description = description;
         this.supervisor = supervisor;
     }
+
     public Project(String title, String description, String supervisor, int id) {
-    this.title = title;
-    this.description = description;
-    this.supervisor = supervisor;
-    this.id = id;
+        this.title = title;
+        this.description = description;
+        this.supervisor = supervisor;
+        this.id = id;
     }
 
     public String getTitle() { return title; }
@@ -24,7 +25,5 @@ public class Project {
     public void setTitle(String title) { this.title = title; }
     public void setDescription(String description) { this.description = description; }
     public void setSupervisor(String supervisor) { this.supervisor = supervisor; }
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id; }
 }

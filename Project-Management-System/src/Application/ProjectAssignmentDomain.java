@@ -20,7 +20,11 @@ public class ProjectAssignmentDomain {
     }
 
     private String assignProject(Project project, String supervisor) {
+        if (project == null || supervisor == null || supervisor.trim().isEmpty()) {
+            return "Invalid project or supervisor.";
+        }
         if (database.updateProject(project.getId(), project.getTitle(), project.getDescription(), supervisor)) {
+            database.logNotification(Session.getUserId(), "Project Assignment", "Assigned project ID: " + project.getId() + " to " + supervisor);
             return "Project assigned successfully!";
         }
         return "Failed to assign project.";

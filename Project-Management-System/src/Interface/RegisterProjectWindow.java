@@ -26,7 +26,6 @@ public class RegisterProjectWindow extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
-        // Title
         JLabel titleLabel = new JLabel("Register Project", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
         gbc.gridx = 0;
@@ -34,7 +33,6 @@ public class RegisterProjectWindow extends JFrame {
         gbc.weighty = 0.0;
         mainPanel.add(titleLabel, gbc);
 
-        // Check if already registered
         Project registeredProject = controller.getRegisteredProject();
         if (registeredProject != null) {
             new Notification("You have already registered a project.");
@@ -42,7 +40,6 @@ public class RegisterProjectWindow extends JFrame {
             return;
         }
 
-        // Projects Panel
         JPanel projectPanel = new JPanel(new GridBagLayout());
         projectPanel.setBackground(new Color(245, 245, 245));
         GridBagConstraints projGbc = new GridBagConstraints();
@@ -52,32 +49,40 @@ public class RegisterProjectWindow extends JFrame {
         projGbc.weighty = 0.0;
 
         List<Project> projects = controller.getAvailableProjects();
-        for (int i = 0; i < projects.size(); i++) {
-            Project project = projects.get(i);
-            JPanel panel = new JPanel(new BorderLayout());
-            panel.setBorder(BorderFactory.createTitledBorder(project.getTitle()));
-            panel.setBackground(new Color(245, 245, 245));
-
-            JTextArea details = new JTextArea("Description: " + project.getDescription() +
-                    "\nSupervisor: " + project.getSupervisor());
-            details.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-            details.setEditable(false);
-            details.setBackground(new Color(245, 245, 245));
-            panel.add(details, BorderLayout.CENTER);
-
-            JButton registerBtn = new JButton("Register");
-            registerBtn.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-            registerBtn.setPreferredSize(new Dimension(120, 40));
-            registerBtn.addActionListener(e -> {
-                String result = controller.registerProject(project);
-                new Notification(result);
-                dispose();
-            });
-            panel.add(registerBtn, BorderLayout.EAST);
-
+        if (projects.isEmpty()) {
+            JLabel noProjectsLabel = new JLabel("No projects available.", SwingConstants.CENTER);
+            noProjectsLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
             projGbc.gridx = 0;
-            projGbc.gridy = i;
-            projectPanel.add(panel, projGbc);
+            projGbc.gridy = 0;
+            projectPanel.add(noProjectsLabel, projGbc);
+        } else {
+            for (int i = 0; i < projects.size(); i++) {
+                Project project = projects.get(i);
+                JPanel panel = new JPanel(new BorderLayout());
+                panel.setBorder(BorderFactory.createTitledBorder(project.getTitle()));
+                panel.setBackground(new Color(245, 245, 245));
+
+                JTextArea details = new JTextArea("Description: " + (project.getDescription() != null ? project.getDescription() : "No description") +
+                        "\nSupervisor: " + (project.getSupervisor() != null ? project.getSupervisor() : "Unassigned"));
+                details.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+                details.setEditable(false);
+                details.setBackground(new Color(245, 245, 245));
+                panel.add(details, BorderLayout.CENTER);
+
+                JButton registerBtn = new JButton("Request Registration");
+                registerBtn.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+                registerBtn.setPreferredSize(new Dimension(150, 40));
+                registerBtn.addActionListener(e -> {
+                    String result = controller.registerProject(project);
+                    new Notification(result);
+                    dispose();
+                });
+                panel.add(registerBtn, BorderLayout.EAST);
+
+                projGbc.gridx = 0;
+                projGbc.gridy = i;
+                projectPanel.add(panel, projGbc);
+            }
         }
 
         JScrollPane scrollPane = new JScrollPane(projectPanel);
@@ -87,13 +92,11 @@ public class RegisterProjectWindow extends JFrame {
         gbc.fill = GridBagConstraints.BOTH;
         mainPanel.add(scrollPane, gbc);
 
-        // Back Button
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         bottomPanel.setBackground(new Color(245, 245, 245));
         JButton backBtn = new JButton("Back");
         backBtn.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         backBtn.setPreferredSize(new Dimension(120, 40));
-        backBtn.addActionListener(e -> dispose());
         bottomPanel.add(backBtn);
 
         gbc.gridx = 0;
@@ -103,6 +106,7 @@ public class RegisterProjectWindow extends JFrame {
         mainPanel.add(bottomPanel, gbc);
 
         add(mainPanel, BorderLayout.CENTER);
+        backBtn.addActionListener(e -> dispose());
         setVisible(true);
     }
 }

@@ -27,7 +27,6 @@ public class ProvideFeedbackWindow extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
-        // Title
         JLabel titleLabel = new JLabel("Provide Feedback", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
         gbc.gridx = 0;
@@ -35,14 +34,12 @@ public class ProvideFeedbackWindow extends JFrame {
         gbc.weighty = 0.0;
         mainPanel.add(titleLabel, gbc);
 
-        // Feedback Label
         JLabel feedbackLabel = new JLabel("Feedback for " + submission.getStudentName() + ":");
         feedbackLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         gbc.gridx = 0;
         gbc.gridy = 1;
         mainPanel.add(feedbackLabel, gbc);
 
-        // Feedback Area
         JTextArea feedbackArea = new JTextArea(10, 30);
         feedbackArea.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         feedbackArea.setLineWrap(true);
@@ -56,7 +53,6 @@ public class ProvideFeedbackWindow extends JFrame {
         gbc.fill = GridBagConstraints.BOTH;
         mainPanel.add(scrollPane, gbc);
 
-        // Button Panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttonPanel.setBackground(new Color(245, 245, 245));
 
@@ -78,7 +74,6 @@ public class ProvideFeedbackWindow extends JFrame {
 
         add(mainPanel, BorderLayout.CENTER);
 
-        // Actions
         submitBtn.addActionListener(e -> {
             String feedback = feedbackArea.getText().trim();
             if (!feedback.isEmpty()) {
